@@ -16,13 +16,13 @@
 //
 //
 //    private ArrayList<GroupModel> mExampleList;
-//    private OnItemClickListener mListener;
+//    private OnRestaurantSelectedListener mListener;
 //
 //    public GroupAdapter(ArrayList<GroupModel> exampleList) {
 //        mExampleList = exampleList;
 //    }
 //
-//    public void setOnItemClickListener(OnItemClickListener listener) {
+//    public void setOnItemClickListener(OnRestaurantSelectedListener listener) {
 //        mListener = listener;
 //    }
 //
@@ -38,8 +38,8 @@
 //        return mExampleList.size();
 //    }
 //
-//    public interface OnItemClickListener {
-//        void onItemClick(int position);
+//    public interface OnRestaurantSelectedListener {
+//        void onRestaurantSelected(int position);
 //    }
 //
 //
@@ -62,7 +62,7 @@
 //        @Override
 //        public void onClick(View v) {
 //            int clickedPostion = getAdapterPosition();
-//            mListener.onItemClick(clickedPostion);
+//            mListener.onRestaurantSelected(clickedPostion);
 //
 //        }
 //    }

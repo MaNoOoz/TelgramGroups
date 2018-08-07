@@ -1,7 +1,8 @@
-package com.manooz.telgramgroups.Current_Project.fragments;
+package com.manooz.telgramgroups.Current_Project.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import com.manooz.telgramgroups.R;
 public class FilterDialogFragment extends DialogFragment {
 
     Spinner mCategorySpinner,mPriceSpinner,mSortSpinner,mCitySpinner;
-    Button mSearchBtn,mCancelBtn;
+    Button mSearchBtn,mCancelBtn,mClearBtn;
 
     private View mRootView;
     private FilterListener mFilterListener;
@@ -34,7 +35,7 @@ public class FilterDialogFragment extends DialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.dialog_filters, container, false);
@@ -63,6 +64,7 @@ public class FilterDialogFragment extends DialogFragment {
                 dismiss();
             }
         });
+
 
         return mRootView;
     }

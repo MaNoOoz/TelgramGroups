@@ -191,7 +191,7 @@
 //        }
 //    }
 //
-//    class ViewHolder extends RecyclerView.ViewHolder {
+//    class mViewHolder extends RecyclerView.mViewHolder {
 //        private TextView mGroupName;
 //        private TextView mGroupDesc;
 //        private TextView profile_image;

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="item_click_support" type="id">id</item>
+    <item name="imv_list_item_circle" type="id">asd</item>
+    <item name="lbl_message" type="id">asdsd</item>
+    <item name="lbl_date_and_time" type="id">asdsdsdsd</item>
+</resources>

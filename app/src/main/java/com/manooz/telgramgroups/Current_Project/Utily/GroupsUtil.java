@@ -1,4 +1,4 @@
-package com.manooz.telgramgroups.Current_Project.utily;
+package com.manooz.telgramgroups.Current_Project.Utily;
 
 
 import android.content.Context;
@@ -67,7 +67,7 @@ public class GroupsUtil  {
         group.setUserName(getRandomString(cities, random));
         group.setCatogries(getRandomString(categories, random));
         group.setPhoto(getRandomImageUrl(random));
-        group.setmNumOfLiks(getRandomInt(prices, random));
+        group.setmNumOfLiks( getRandomInt(prices, random));
         group.setRatings(getRandomRating(random));
         group.setmNumOfRatings(random.nextInt(20));
 

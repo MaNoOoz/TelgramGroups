@@ -17,11 +17,11 @@
 //public class myRecycleAdapter extends RecyclerView.Adapter<mVh> {
 //
 //    // Clean Code To Use In Other Projects
-//    public interface OnItemClickListener {
-//        void onItemClick(int positionOfIndex);
+//    public interface OnRestaurantSelectedListener {
+//        void onRestaurantSelected(int positionOfIndex);
 //    }
 ////    // ===========Listner==============\\
-//    private OnItemClickListener mListener;
+//    private OnRestaurantSelectedListener mListener;
 //
 //   public ArrayList<Group_Object> group_objectArrayList;
 //   public Fragment addGroupActivity;

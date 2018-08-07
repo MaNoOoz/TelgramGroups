@@ -46,7 +46,7 @@ public class Filters {
         return !(TextUtils.isEmpty(category));
     }
 
-    public boolean hasCity() {
+    public boolean haslikes() {
         return !(TextUtils.isEmpty(likes));
     }
 
