@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "318551127782",
+    "firebase_url": "https://telgramgroups-6ab93.firebaseio.com",
+    "project_id": "telgramgroups-6ab93",
+    "storage_bucket": "telgramgroups-6ab93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318551127782:android:1a20c846e39cd156",
+        "android_client_info": {
+          "package_name": "com.manooz.telgramgroups"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318551127782-dm6f4cdnhdoqo3r2qcp7rl66fcj4lcc6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.manooz.telgramgroups",
+            "certificate_hash": "8141ed797ae771130d4ea96895dc08ea4e97010a"
+          }
+        },
+        {
+          "client_id": "318551127782-i91ljmqftll64ssenomgegp3r68ef5g7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5VaDk7G691moF-mdCkUSP0_9hnzmic1I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318551127782-i91ljmqftll64ssenomgegp3r68ef5g7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
