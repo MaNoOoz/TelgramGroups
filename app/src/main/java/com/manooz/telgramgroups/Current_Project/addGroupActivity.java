@@ -35,7 +35,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -43,18 +47,22 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.manooz.telgramgroups.Current_Project.POJO.Group_Object;
 import com.manooz.telgramgroups.Current_Project.POJO.Upload;
+import com.manooz.telgramgroups.Current_Project.Utily.GroupsUtil;
 import com.manooz.telgramgroups.R;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.MAIN_COLLECTION;
 
-public class addGroupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class addGroupActivity extends AppCompatActivity {
 
 
     private static final String TAG = "addGroupActivity";
@@ -67,11 +75,13 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
     private DatabaseReference mDatabaseRef  = FirebaseDatabase.getInstance().getReference("uploads");
     private StorageTask storageTask;
     //
-    public String item;
+    public String item,item2;
     int mNumOfRatings,mNumOfLikes,mNumOfComments,mNumOfViews;
 
-    private Spinner spinner;
+    private Spinner spinner,spinner2;
     public ArrayAdapter<CharSequence> mSpinneradapter;
+    public ArrayAdapter<CharSequence> mSpinneradapter2;
+
     private EditText mGroupName, mGroupDesc, mGroupLink, mUserName;
     private Button mAddToMyDataBase;
     private ImageView addImage;
@@ -87,35 +97,80 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
 
     // ======================================== Spinner ============================================= \\
 
+    private void mySpineers() {
 
+        spinner = (Spinner) findViewById(R.id.spinner);
+        spinner2 = (Spinner) findViewById(R.id.spinnerCity);
 
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // An item was selected. You can retrieve the selected item using
+                // parent.getItemAtPosition(pos)
+                item = parent.getItemAtPosition(position).toString();
+                // Showing selected spinner item
+                switch (position) {
+                    case 0:
+                        // Whatever you want to happen when the first item gets selected
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
-        item = parent.getItemAtPosition(position).toString();
-        // Showing selected spinner item
-        switch (position) {
-            case 0:
-                // Whatever you want to happen when the first item gets selected
+//                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        // Whatever you want to happen when the second item gets selected
+                        break;
+                    case 2:
+                        // Whatever you want to happen when the thrid item gets selected
+                        break;
 
-                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
-                break;
-            case 1:
-                // Whatever you want to happen when the second item gets selected
-                break;
-            case 2:
-                // Whatever you want to happen when the thrid item gets selected
-                break;
+                }
+            }
 
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-    }
+            }
+        });
+        spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // An item was selected. You can retrieve the selected item using
+                // parent.getItemAtPosition(pos)
+                item2 = parent.getItemAtPosition(position).toString();
+                // Showing selected spinner item
+                switch (position) {
+                    case 0:
+                        // Whatever you want to happen when the first item gets selected
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
+//                Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        // Whatever you want to happen when the second item gets selected
+                        break;
+                    case 2:
+                        // Whatever you want to happen when the thrid item gets selected
+                        break;
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mSpinneradapter = ArrayAdapter.createFromResource(this, R.array.mListOfCatagories2, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        mSpinneradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the mSpinneradapter to the spinner
+        spinner.setAdapter(mSpinneradapter);
+
+        mSpinneradapter2 = ArrayAdapter.createFromResource(this, R.array.countries, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        mSpinneradapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the mSpinneradapter to the spinner
+        spinner2.setAdapter(mSpinneradapter2);
 
     }
 
@@ -161,38 +216,13 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
         });
 
         mWidgets();
+        mySpineers();
+        clicks();
 
 
-         mSpinneradapter = ArrayAdapter.createFromResource(this, R.array.categories, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        mSpinneradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the mSpinneradapter to the spinner
-        spinner.setAdapter(mSpinneradapter);
-
-        mAddToMyDataBase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TakeMyData(0);
-//                progressBar.setVisibility(View.VISIBLE);
-
-
-            }
-        });
-
-
-        addImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setMinCropResultSize(512, 512)
-                        .setAspectRatio(1, 1)
-                        .start(addGroupActivity.this);
-
-            }
-
-        });
     }
+
+
 
     private void uploadFile() {
         if (postImageUri!=null){
@@ -282,12 +312,8 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
 
 
     // ======================================== My Methods ============================================= \\
+
     private void mWidgets() {
-
-        spinner = (Spinner) findViewById(R.id.spinner);
-
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
 
         progressBar = findViewById(R.id.new_post_progress);
         mGroupName = findViewById(R.id.mName);
@@ -297,7 +323,32 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
         mAddToMyDataBase = findViewById(R.id.mAddToDatabase);
         addImage = findViewById(R.id.addImg);
     }
+    private void clicks() {
 
+        mAddToMyDataBase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TakeMyData(0);
+//                progressBar.setVisibility(View.VISIBLE);
+
+
+            }
+        });
+
+
+        addImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setMinCropResultSize(512, 512)
+                        .setAspectRatio(1, 1)
+                        .start(addGroupActivity.this);
+
+            }
+
+        });
+    }
 
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
@@ -330,12 +381,17 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
         String mDesc = mGroupDesc.getText().toString().trim();
         String myUserName = mUserName.getText().toString().trim();
         String mCatogries = item;
+        String mCity = item2 ;
+
+        // TODO: 8/14/2018
+
         //dummy Data
-        double mRating = 1.421;
-        int mNumOfRatings = 1;
-        int mNumOfLikes = 13;
-        int mNumOfComments =4;
-        int mNumOfViews=5;
+        Random random = new Random();
+        double mRating = GroupsUtil.getRandomRating(random);
+        int mNumOfRatings = GroupsUtil.setRandomInt(random);
+        int mNumOfLikes = GroupsUtil.setRandomInt(random);
+        int mNumOfComments =GroupsUtil.setRandomInt(random);
+        int mNumOfViews=   GroupsUtil.setRandomInt(random);
 
 //        if (mLink.startsWith("http://")|| mLink.startsWith("https://")||mLink.startsWith("@")){
         if (mLink.startsWith("http://")|| mLink.startsWith("https://")){
@@ -351,13 +407,17 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
 //        note.put(UserName, myUserName);
 //        mGroupLink.addTextChangedListener(textWatcher);
 
-            Group_Object group_object = new Group_Object("",mName, mDesc, mLink, myUserName,mCatogries,
+            final Group_Object group_object = new Group_Object("",mName, mDesc, mLink, myUserName,mCatogries,mCity,
                             mRating,mNumOfRatings,mNumOfLikes,mNumOfComments,mNumOfViews);
 
+            final List<Group_Object> group_objects =new ArrayList<>();
+            // WTF
+//            mSpinneradapter.getItem(postion);
+//            if (postion == 0){
 
-            mSpinneradapter.getItem(postion);
-            if (postion == 0){
-                mCollectionReference.document(item).collection(item +"Groups").document().set(group_object)
+
+
+                mCollectionReference.document().set(group_object)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -376,14 +436,15 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
                 }).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(addGroupActivity.this, "Added successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(addGroupActivity.this, getString(R.string.groupAdded) , Toast.LENGTH_SHORT).show();
 
 //                        finish();
-
-
                     }
                 });
-            }
+            }else {
+            mGroupLink.setError(getString(R.string.enter_good_group_link), getResources().getDrawable(R.drawable.ic_error_outline_black_24dp));
+            mAddToMyDataBase.setEnabled(true);
+        }
 
 
             // TODO: 7/20/2018
@@ -395,10 +456,9 @@ public class addGroupActivity extends AppCompatActivity implements AdapterView.O
 //        homeFragment.setArguments(bundle);
 
 
-        }else {
-            mGroupLink.setError("أدخل رابط صالح", getResources().getDrawable(R.drawable.ic_error_outline_black_24dp));
-            mAddToMyDataBase.setEnabled(true);
-        }
+//        }else {
+
+//        }
 
     }
 

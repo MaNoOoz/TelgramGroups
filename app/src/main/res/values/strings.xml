@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PhotoBlog</string>
+    <string name="app_name">Telegram Groups</string>
     <string name="pass_hint">Password...</string>
     <string name="email_hint">Your Email...</string>
     <string name="login_logo_desc">Logo Login Page</string>
@@ -70,11 +70,16 @@
 
     <string name="sort_by_rating">Sort by Rating</string>
     <string name="sort_by_popularity">Sort by Likes</string>
-    <string name="sort_by_price">Sort by Comments</string>
+    <string name="sort_by_price">Sort by Price</string>
 
-    <string name="sorted_by_rating">sorted by rating</string>
-    <string name="sorted_by_price">sorted by price</string>
-    <string name="sorted_by_popularity">sorted by popularity</string>
+    <string name="sort_by_rating2">ترتيب حسب التقييم</string>
+    <string name="sort_by_popularity2">الأكثر شعبية</string>
+    <string name="sort_by_price2">ترتيب حسب السعر</string>
+
+    <string name="sorted_by_rating">Sorted By Rating</string>
+    <string name="sorted_by_comments">Sorted By Comments</string>
+    <string name="sorted_by_popularity">Sorted By Popularity</string>
+
     <string name="title_search_now">Search Now</string>
     <string name="action_delete_item">Item Deleted</string>
     <string name="action_undo">UNDO?</string>
@@ -184,8 +189,16 @@
         <item>@string/sort_by_popularity</item>
         <item>@string/sort_by_price</item>
     </string-array>
+    <!-- Ways you can sort restaurants -->
+    <string-array name="sort_by2">
+        <item>@string/sort_by_rating2</item>
+        <item>@string/sort_by_popularity2</item>
+        <item>@string/sort_by_price2</item>
+    </string-array>
 
-    <array name="categories">
+
+    <array name="mListOfCatagories" >
+        <item>@string/value_any_category</item>
         <item>Sport</item>
         <item>Jobs</item>
         <item>Educations</item>
@@ -203,7 +216,28 @@
         <item>UnSorted</item>
     </array>
 
+    <array name="mListOfCatagories2">
+        <item>@string/value_any_category2</item>
+        <item>الرياضة</item>
+        <item>وظائف</item>
+        <item>التعليم</item>
+        <item>التقنية</item>
+        <item>الصحة</item>
+        <item>البيع والشراء</item>
+        <item>السياسة</item>
+        <item>العقارات</item>
+        <item>اسلامية</item>
+        <item>العاب</item>
+        <item>ريادة اعمال</item>
+        <item>نكت</item>
+        <item>الصور</item>
+        <item>الإنمي</item>
+        <item>غير مصنف</item>
+    </array>
+
+
     <array name="countries">
+        <item> جميع الدول</item>
         <item>السعودية</item>
         <item>الكويت</item>
         <item>البحرين</item>
@@ -214,7 +248,8 @@
         <item>عمان</item>
         <item>المغرب</item>
         <item>مصر</item>
-        <item>بلده اخرى</item>
+        <item>سوريا</item>
+        <item>بلد آخر</item>
     </array>
 
     <!--<array name="icons">-->
@@ -438,5 +473,8 @@
     <string name="phone_num_verification">Phone Number Verification</string>
     <string name="add_new">Add New +</string>
     <string name="titles">Add New Group</string>
+    <string name="value_any_category2">جميع الفئات</string>
+    <string name="groupAdded">تمت إضافة المجموعة بنجاح</string>
+    <string name="enter_good_group_link">أدخل رابط صالح</string>
 
 </resources>

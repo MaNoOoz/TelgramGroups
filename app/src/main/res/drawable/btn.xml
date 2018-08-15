@@ -5,10 +5,10 @@
         <shape>
             <solid  android:color="#156365" />
             <corners
-                android:bottomLeftRadius="25dp"
-                android:bottomRightRadius="25dp"
-                android:topLeftRadius="25dp"
-                android:topRightRadius="25dp" />
+                android:bottomLeftRadius="5dp"
+                android:bottomRightRadius="5dp"
+                android:topLeftRadius="5dp"
+                android:topRightRadius="5dp" />
             <gradient
                 android:angle="270"
                 android:endColor="#e016a1dd"
@@ -27,10 +27,10 @@
         <shape>
             <solid  android:color="#47a61b" />
             <corners
-                android:bottomLeftRadius="25dp"
-                android:bottomRightRadius="25dp"
-                android:topLeftRadius="25dp"
-                android:topRightRadius="25dp" />
+                android:bottomLeftRadius="5dp"
+                android:bottomRightRadius="5dp"
+                android:topLeftRadius="5dp"
+                android:topRightRadius="5dp" />
             <gradient
                 android:angle="-90"
                 android:endColor="#3cef3f"

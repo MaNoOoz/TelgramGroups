@@ -23,7 +23,7 @@ public class GroupsUtil  {
 
     private static final int MAX_IMAGE_NUM = 22;
 
-    private static final String[] NAME_FIRST_WORDS = {
+    public static final String[] NAME_FIRST_WORDS = {
             "Foo",
             "Bar",
             "Baz",
@@ -35,7 +35,7 @@ public class GroupsUtil  {
             "The Best",
     };
 
-    private static final String[] NAME_SECOND_WORDS = {
+    public static final String[] NAME_SECOND_WORDS = {
             "Group",
             "Cafe",
             "Spot",
@@ -46,9 +46,9 @@ public class GroupsUtil  {
     };
 
 
-    /**
-     * Create a random Group POJO.
-     */
+
+    public static int[] prices = new int[]{10, 20, 30,40,50,60,70,80,90,100,200,220,240,260,280,300,411,425,521,123,555,256,742,135,632,235,162};
+
     public static Group_Object getRandom(Context context) {
         Group_Object group = new Group_Object();
         Random random = new Random();
@@ -58,25 +58,26 @@ public class GroupsUtil  {
         cities = Arrays.copyOfRange(cities, 1, cities.length);
 
         // Categories (first element is 'Any')
-        String[] categories = context.getResources().getStringArray(R.array.categories);
+        String[] categories = context.getResources().getStringArray(R.array.mListOfCatagories);
         categories = Arrays.copyOfRange(categories, 1, categories.length);
 
-        int[] prices = new int[]{1, 2, 3};
 
         group.setGroupName(getRandomName(random));
         group.setUserName(getRandomString(cities, random));
-        group.setCatogries(getRandomString(categories, random));
+        group.setCategories(getRandomString(categories, random));
         group.setPhoto(getRandomImageUrl(random));
         group.setmNumOfLiks( getRandomInt(prices, random));
         group.setRatings(getRandomRating(random));
         group.setmNumOfRatings(random.nextInt(20));
+        group.setGroupDesc(getRandomString(cities,random));
+        group.setGroupLink(getRandomString(cities,random));
 
         return group;
     }
 
 
     /**
-     * Get a random image.
+     * Get a randomLongString image.
      */
     private static String getRandomImageUrl(Random random) {
         // Integer between 1 and MAX_IMAGE_NUM (inclusive)
@@ -107,24 +108,28 @@ public class GroupsUtil  {
         }
     }
 
-    private static double getRandomRating(Random random) {
+    public static double getRandomRating(Random random) {
         double min = 1.0;
         return min + (random.nextDouble() * 4.0);
     }
 
-    private static String getRandomName(Random random) {
+    public static String getRandomName(Random random) {
         return getRandomString(NAME_FIRST_WORDS, random) + " "
                 + getRandomString(NAME_SECOND_WORDS, random);
     }
 
-    private static String getRandomString(String[] array, Random random) {
+    public static String getRandomString(String[] array, Random random) {
         int ind = random.nextInt(array.length);
         return array[ind];
     }
 
-    private static int getRandomInt(int[] array, Random random) {
+    public static int getRandomInt(int[] array, Random random) {
         int ind = random.nextInt(array.length);
         return array[ind];
+    }
+    public static int setRandomInt( Random random) {
+        int ind = random.nextInt(prices.length);
+        return prices[ind];
     }
 
 }

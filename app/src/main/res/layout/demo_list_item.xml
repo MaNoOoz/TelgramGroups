@@ -305,7 +305,7 @@
                             tools:layout_editor_absoluteY="89dp" />
 
                         <TextView
-                            android:id="@+id/mNumOfLikes"
+                            android:id="@+id/mNumOfLiksTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="20dp"
                             android:layout_marginRight="10dp"

@@ -1,4 +1,4 @@
-package com.manooz.telgramgroups.Current_Project.Fragments;
+package com.manooz.telgramgroups.Current_Project;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -162,7 +162,7 @@ public class FilterDialogFragment extends DialogFragment {
 
         if (mRootView != null) {
             filters.setCategory(getSelectedCategory());
-            filters.setLikes(getSelectedCity());
+//            filters.setLikes(getSelectedCity());
 //            filters.setPrice(getSelectedPrice());
             filters.setSortBy(getSelectedSortBy());
             filters.setSortDirection(getSortDirection());

@@ -18,13 +18,21 @@ public class mConstants   {
    // General String in All Apps
    public static Uri DeveloperApps = Uri.parse("https://play.google.com/store/apps/dev?id=8389389659889758696");
 
-   public static final String KEY_TITLE = "title";
-   public static final String KEY_DESCRIPTION = "description";
-   public static final String GroupName = "GroupName";
-   public static final String GroupDesc = "GroupDesc";
-   public static final String GroupLink = "GroupLink";
-   public static final String UserName = "UserName";
-   public static final String CATEGORY = "catogries";
+   // Object Fields
+   public static final String  KEY_TITLE = "title";
+   public static final String  KEY_DESCRIPTION = "description";
+   public static final String  GroupName = "groupName";
+   public static final String  GroupDesc = "groupDesc";
+   public static final String  GroupLink = "groupLink";
+   public static final String  UserName = "userName";
+   public static final String  CATEGORY = "categories";
+   public static final String  NumOfComments = "mNumOfComments";
+   public static final String  NumOfLiks = "mNumOfLiks";
+   public static final String  NumOfViews = "mNumOfViews";
+   public static final String  NumOfRatings = "mNumOfRatings";
+   public static final String  Ratings = "ratings";
+
+
 
 
    public static final String MAIN_COLLECTION = "Groups";

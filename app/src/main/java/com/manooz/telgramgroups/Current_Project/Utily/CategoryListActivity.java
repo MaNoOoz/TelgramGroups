@@ -46,7 +46,7 @@
 //    public void onCategoryListInteraction(Group_Object item) {
 //        Intent newIntent = new Intent(this, ListOfGroups.class);
 //        Bundle bundle = new Bundle();
-//        bundle.putString(mConstants.CATEGORY, item.getCatogries());
+//        bundle.putString(mConstants.CATEGORY, item.getCategories());
 //        bundle.putString(mConstants.TITLE, item.getGroupName());
 //        newIntent.putExtra(mConstants.DATA, bundle);
 //        newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

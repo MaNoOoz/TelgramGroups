@@ -474,7 +474,7 @@
 //////                    holder.mUserName.setText(String.format("%s", model.getUserName()));
 //////                    holder.mGroupLink.setText(model.getGroupLink() + "");
 //////                    final String mLink = holder.mGroupLink.getText().toString();
-//////                    holder.mCatogries.setText(model.getCatogries() + "");
+//////                    holder.mCatogries.setText(model.getCategories() + "");
 //////                    holder.materialRatingBar.setRating((float) model.getRatings());
 //////                    holder.mNumOfLikes.setText(model.getmNumOfLiks() + "");
 //////                    holder.mNumOfComments.setText(model.getmNumOfComments() + "");
@@ -666,7 +666,7 @@
 //////                    holder.mUserName.setText(String.format("%s", model.getUserName()));
 //////                    holder.mGroupLink.setText(model.getGroupLink() + "");
 //////                    final String mLink = holder.mGroupLink.getText().toString();
-//////                    holder.mCatogries.setText(model.getCatogries() + "");
+//////                    holder.mCatogries.setText(model.getCategories() + "");
 //////                    holder.materialRatingBar.setRating((float) model.getRatings());
 //////                    holder.mNumOfLikes.setText(model.getmNumOfLiks() + "");
 //////                    holder.mNumOfComments.setText(model.getmNumOfComments() + "");
@@ -834,12 +834,12 @@
 ////// ======================================== BackUp ============================================= \\
 //////private void addToFireBase() {
 //////
-//////        Random random = new Random();
+//////        Random randomLongString = new Random();
 //////        Map<String, String> stringMap = new HashMap<>();
 //////
 //////        for (int i = 0; i < 2; i++) {
-//////        stringMap.put("name", " " + random.nextInt(50));
-//////        stringMap.put(" Ok ", " Hell9o" + random.nextInt(50));
+//////        stringMap.put("name", " " + randomLongString.nextInt(50));
+//////        stringMap.put(" Ok ", " Hell9o" + randomLongString.nextInt(50));
 //////
 //////        db.collection("group_objectArrayList").add(stringMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
 //////@Override

@@ -24,11 +24,11 @@ import java.util.Objects;
 import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.MAIN_COLLECTION;
 
 public class mCategoriesFragment extends Fragment implements RestaurantAdapter.OnRestaurantSelectedListener{
-
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private RestaurantAdapter restaurantAdapter;
-    private RecyclerView recyclerView ;
-    private Context context;
+//
+//    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+//    private RestaurantAdapter restaurantAdapter;
+//    private RecyclerView recyclerView ;
+//    private Context context;
 
     //    CollectionReference notebookref= db.collection(mConstants.MAIN_COLLECTION);
     //    RecyclerView mRecyclerView;
@@ -43,7 +43,7 @@ public class mCategoriesFragment extends Fragment implements RestaurantAdapter.O
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         final View view = getLayoutInflater().inflate(R.layout.catogaries_fragment, container, false);
-        recyclerView = view.findViewById(R.id.mRv2);
+//        recyclerView = view.findViewById(R.id.mRv2);
 
 //        mGetMyListOfCats2();
 

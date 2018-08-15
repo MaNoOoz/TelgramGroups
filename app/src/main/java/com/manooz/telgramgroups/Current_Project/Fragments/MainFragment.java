@@ -1,73 +1,78 @@
 package com.manooz.telgramgroups.Current_Project.Fragments;
 
-import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.manooz.telgramgroups.Current_Project.Adapter.RestaurantAdapter;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.manooz.telgramgroups.Current_Project.Adapter.GroupAdapter2;
+import com.manooz.telgramgroups.Current_Project.FilterDialogFragment;
+import com.manooz.telgramgroups.Current_Project.GroupDetails;
 import com.manooz.telgramgroups.Current_Project.MainActivityViewModel;
 import com.manooz.telgramgroups.Current_Project.POJO.Filters;
 import com.manooz.telgramgroups.Current_Project.POJO.Group_Object;
 import com.manooz.telgramgroups.Current_Project.addGroupActivity;
 import com.manooz.telgramgroups.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.MAIN_COLLECTION;
 import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.MAIN_COLLECTION2;
 
-public class MainFragment extends Fragment implements RestaurantAdapter.OnRestaurantSelectedListener{
+public class MainFragment extends Fragment implements GroupAdapter2.OnRestaurantSelectedListener {
 
-    public  MainFragment (){}
+    //,FilterDialogFragment.FilterListener
+    public MainFragment() {
+    }
 
-
+    // ======================================== Statics Val ===================================== \\
     private static final int LIMIT = 50;
-    private static final String TAG = " Home";
-    FragmentActivity listener;
+    private static final String TAG = "Home";
+    //    FragmentActivity listener;
     // ======================================== Val ============================================= \\
-    // RecyclerView
-    RecyclerView mRecyclerView;
-    ImageView mFilterBtn, mClearBtn;
-    // ======================================== Val ============================================= \\
+    private RecyclerView mRecyclerView, mRecyclerView2;
+    private GroupAdapter2 mAdapter, mAdapter2;
     private Filters filters;
+    // ======================================== Widgets ========================================= \\
+    private ImageView mFilterBtn, mClearBtn;
+    private TextView mCurrentSearchView, mCurrentSortByView;
+    private ImageView mSearchBtn;
     private EditText mSearch_keyword;
-    private RelativeLayout mCategoryAll, mTopCategory;
-    //    Uri mUriImage;
-    //    int mNumberOflikes, mNumOfViews, mNumOfComments;
     private FloatingActionButton mFloatingActionButton;
-    //firebase
+    // ======================================== Firebase ======================================== \\
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
+    private Query mQueryTimeStamp, mQueryTop;
+
     private CollectionReference GroupsRef = db.collection(MAIN_COLLECTION2);
-    private FirebaseFirestore mFirestore;
-    private FirestoreRecyclerAdapter mFirestoreRecyclerAdapter;
-    private RestaurantAdapter restaurantAdapter;
-    private DocumentReference documentReference = db.document(MAIN_COLLECTION + "/Sport").collection("SportsGroups").document();
-    private DocumentReference documentReference2 = db.document(MAIN_COLLECTION + "/Sport");
-
+    private List<Group_Object> group_objects;
     private FilterDialogFragment mFilterDialog;
-
     private Context context;
     private MainActivityViewModel mViewModel;
 
@@ -75,42 +80,6 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // listener
-//        mFirestoreRecyclerAdapter.startListening();
-        restaurantAdapter.startListening();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-//        mFirestoreRecyclerAdapter.stopListening();
-        restaurantAdapter.startListening();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Activity) {
-            this.listener = (FragmentActivity) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        this.listener = null;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Nullable
@@ -119,11 +88,45 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
 
         final View view = getLayoutInflater().inflate(R.layout.activity_main_fragment, container, false);
 
-
-        mFilterDialog = new FilterDialogFragment();
         mRecyclerView = view.findViewById(R.id.mRv8);
+        mRecyclerView2 = view.findViewById(R.id.rv);
+        group_objects = new ArrayList<>();
 
-        mGetMyListOfCats2();
+        firebaseAuth = FirebaseAuth.getInstance();
+        // View model
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        // Initialize Firestore and the main RecyclerView
+        initFirestore();
+        initRecyclerView();
+        initRecyclerView2();
+        // Filter Dialog
+        mFilterDialog = new FilterDialogFragment();
+
+        // testing =====================================
+
+        // testing ===================================== end
+
+
+//        GroupsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//
+//                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots){
+//                    Group_Object group_object =queryDocumentSnapshot.toObject(Group_Object.class);
+//                    group_object.setDocumentId(queryDocumentSnapshot.getId());
+//                    String id = group_object.getDocumentId();
+//                    Toast.makeText(getActivity(), "Hi" + id, Toast.LENGTH_SHORT).show();
+//
+//
+//                }
+//
+//
+//
+//            }
+//        });
+
+
+//        mGetMyListOfCats2();
 
         // Find Widgets
 
@@ -131,7 +134,12 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
         mFloatingActionButton = (Objects.requireNonNull(getActivity()).findViewById(R.id.add_post_btn));
         mFilterBtn = view.findViewById(R.id.button_filter);
         mClearBtn = view.findViewById(R.id.button_clear_filter);
-                // Click Events
+        mSearchBtn = view.findViewById(R.id.mSearchBtn);
+        mCurrentSearchView = view.findViewById(R.id.text_current_search);
+        mCurrentSortByView = view.findViewById(R.id.text_current_sort_by);
+
+
+        // Click Events
         mClickListeners();
 
 
@@ -139,29 +147,206 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
 
     }
 
-    private void mGetMyListOfCats2() {
+
+    //===================================== My Methods ================================== \\
+
+    private void initFirestore() {
+//        // TODO(developer): Implement
+        if (firebaseAuth.getCurrentUser() != null) {
+            firebaseFirestore = FirebaseFirestore.getInstance();
 
 
-        Query mQuery = FirebaseFirestore.getInstance()
-                .collection(MAIN_COLLECTION)
-                .document("Sport")
-                .collection("SportsGroups")
-                .orderBy("timestamp", Query.Direction.DESCENDING);
+        }
+
+        final Query firstQuery = db.collection("Groups").orderBy("timestamp", Query.Direction.DESCENDING).limit(3);
+        firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                    if (doc.getType() == DocumentChange.Type.ADDED) {
+
+                        String mGroupId = doc.getDocument().getId();
+                        Group_Object group_object1 = doc.getDocument().toObject(Group_Object.class).withId(mGroupId);
+                        group_objects.add(group_object1);
+
+                        mAdapter.setQuery(firstQuery);
+
+
+                    }
+                }
+            }
+        });
+
+
+        mQueryTimeStamp = db.collection(MAIN_COLLECTION)
+                .orderBy(Group_Object.FIELD_NumOfRatings, Query.Direction.DESCENDING)
+                .limit(LIMIT);
+
+        mQueryTop = db.collection(MAIN_COLLECTION)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(LIMIT);
+
+    }
+
+    private void initRecyclerView2() {
+
+        if (mQueryTop == null) {
+            Log.w(TAG, "No query, not initializing RecyclerView");
+        }
+
+        mAdapter2 = new GroupAdapter2(mQueryTop, this) {
+
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+//                    mRecyclerView2.setVisibility(View.GONE);
+//                    mEmptyView.setVisibility(View.VISIBLE);
+                    Toast.makeText(getActivity(), "onDataChanged = items = 0", Toast.LENGTH_SHORT).show();
+                } else {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+//                    mEmptyView.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "onDataChanged", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+//                Snackbar.make(getContext().findViewById(android.R.id.content),
+//                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+                Toast.makeText(getContext(), " check logs for info ", Toast.LENGTH_SHORT).show();
+            }
+        };
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerView.setAdapter(mAdapter2);
+    }
+
+    private void initRecyclerView() {
+        if (mQueryTimeStamp == null) {
+            Log.w(TAG, "No query, not initializing RecyclerView");
+        }
+
+        mAdapter = new GroupAdapter2(mQueryTimeStamp, this) {
+
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+//                    mRecyclerView2.setVisibility(View.GONE);
+//                    mEmptyView.setVisibility(View.VISIBLE);
+                    Toast.makeText(getActivity(), "onDataChanged = items = 0", Toast.LENGTH_SHORT).show();
+                } else {
+                    mRecyclerView2.setVisibility(View.VISIBLE);
+//                    mEmptyView.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "onDataChanged", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+//                Snackbar.make(getContext().findViewById(android.R.id.content),
+//                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+                Toast.makeText(getContext(), " check logs for info ", Toast.LENGTH_SHORT).show();
+            }
+        };
+        mRecyclerView2.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerView2.setAdapter(mAdapter);
+
+
+    }
+
+
+    // TODO: 8/15/2018
+//    @Override
+//    public void onFilter(Filters filters) {
 //
-////        Query query = GroupsRef.orderBy("timestamp", Query.Direction.DESCENDING);
-        FirestoreRecyclerOptions<Group_Object>
-                options = new FirestoreRecyclerOptions.Builder<Group_Object>().setQuery(mQuery,Group_Object.class).build();
+//        // Construct query basic query
+//        Query query = db.collection(MAIN_COLLECTION);
+//        // Category (equality filter)
+//        if (filters.hasCategory()) {
+//            query = query.whereEqualTo(Group_Object.FIELD_CATEGORY, filters.getCategory());
+//        }
+////
+////        // City (equality filter)
+////        if (filters.haslikes()) {
+////            query = query.whereEqualTo("city", filters.getCity());
+////        }
+////
+////        // Price (equality filter)
+////        if (filters.haslikes()) {
+////            query = query.whereEqualTo("price", filters.getLikes());
+////        }
 //
-//        // TODO: 8/6/2018
+//        // Sort by (orderBy with direction)
+//        if (filters.hasSortBy()) {
+//            query = query.orderBy(filters.getSortBy(), filters.getSortDirection());
+//        }
+//
+//        // Limit items
+//        query = query.limit(LIMIT);
+//
+//        // Update the query
+//        mQueryTimeStamp = query;
+//        mAdapter.setQuery(query);
+//
+//        // Set header
+//        mCurrentSearchView.setText(filters.getSearchDescription(getContext()));
+//        mCurrentSortByView.setText(filters.getOrderDescription(getContext()));
+//
+//        // Save filters
+//        mViewModel.setFilters(filters);
+//
+//
+//    }
+//    private void mGetMyListOfCats2() {
+//
+//
+//        Query mQueryTimeStamp = FirebaseFirestore.getInstance()
+//                .collection(MAIN_COLLECTION)
+//                .orderBy("timestamp", Query.Direction.DESCENDING);
+////
+//////        Query query = GroupsRef.orderBy("timestamp", Query.Direction.DESCENDING);
+//        FirestoreRecyclerOptions<Group_Object>
+//                options = new FirestoreRecyclerOptions.Builder<Group_Object>().setQuery(mQueryTimeStamp,Group_Object.class).build();
+////
+////        // TODO: 8/6/2018
 //        List<Group_Object> group_objects = new ArrayList<>();
 //        group_objects.add(new Group_Object());
-
-        restaurantAdapter = new RestaurantAdapter(options,this);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(restaurantAdapter);
-//        restaurantAdapter.mShowOnlyTop(group_objects.subList(0,4));
-    }
+//
+////        restaurantAdapter = new RestaurantAdapter(options,this);
+////        mRecyclerView.setHasFixedSize(true);
+////        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+////        mRecyclerView.setAdapter(restaurantAdapter);
+//
+//
+//        // // TODO: 8/13/2018
+//        // Delete Items From RecycleView And Firestore When SWIPE
+//
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+//                ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//
+//                restaurantAdapter.deleteitem(viewHolder.getAdapterPosition());
+//            }
+//        }).attachToRecyclerView(mRecyclerView);
+//
+//        // Show Only 4 Items
+////        Not Working
+////        if (group_objects.size()>0){
+////            restaurantAdapter.mShowOnlyTop(group_objects.subList(0,4));
+////        }
+//
+//    }
 
     private void mClickListeners() {
 
@@ -177,14 +362,25 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
         mClearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//               mFilterDialog.resetFilters();
+                mFilterDialog.resetFilters();
+                // TODO: 8/15/2018
+//                onFilter(Filters.getDefault());
+//            }
+//        });
 
+                mSearchBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String mSearchedText = mSearch_keyword.getText().toString();
+                        Query mSearchQuery = db.collection(MAIN_COLLECTION);
+                        mSearchQuery.whereEqualTo(Group_Object.FIELD_GroupName, mSearchedText);
+                        mAdapter.setQuery(mSearchQuery);
+
+
+                    }
+                });
             }
         });
-
-
-
-
     }
 
     @Override
@@ -198,24 +394,94 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
                 Intent intent = new Intent(getActivity(), addGroupActivity.class);
                 startActivity(intent);
 
+                //
+//                onAddItemsClicked();
+
 
             }
         });
     }
 
 
+    // dummyData Testing
+//    private void onAddItemsClicked() {
+//        CollectionReference restaurants = db.collection(MAIN_COLLECTION);
+//        for (int i = 0; i < 10; i++) {
+//            //Get a randomLongString restraunt POJO
+//            Group_Object restaurant = GroupsUtil.getRandom(getActivity());
+//            // Add a new document to the restaurants collection
+//            restaurants.add(restaurant);
+//        }
+//    }
+
+
     @Override
-    public void onRestaurantSelected(DocumentSnapshot restaurant) {
+    public void onRestaurantSelected(DocumentSnapshot snapshot) {
+        // Go to the details page for the selected Group
+        Intent intent = new Intent(getActivity(), GroupDetails.class);
+        intent.putExtra(GroupDetails.KEY_RESTAURANT_ID, snapshot.getId());
+        MainFragment.this.startActivity(intent);
 
     }
 
-    //    =========================================== End LifeCycle ====================================== \\
+
+    //===================================== LifeCycle =================================== \\
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // listener
+//        mFirestoreRecyclerAdapter.startListening();
+        // Apply filters
+//        onFilter(mViewModel.getFilters());
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+        if (mAdapter2 != null) {
+            mAdapter2.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+//        mFirestoreRecyclerAdapter.stopListening();
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+        if (mAdapter2 != null) {
+            mAdapter2.startListening();
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+//        if (context instanceof Activity) {
+//            this.listener = (FragmentActivity) context;
+//        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        // TODO: 8/14/2018
+//        this.listener = null;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+}
+
+//    =========================================== End LifeCycle ====================================== \\
 //    ===========================================   My Methods    ======================================  \\
-    //############# https://github.com/firebase/FirebaseUI-Android/tree/master/firestore ############## \\
+//############# https://github.com/firebase/FirebaseUI-Android/tree/master/firestore ############## \\
 //    @NonNull
 //    public FirestoreRecyclerAdapter getFirestoreRecyclerAdapter() {
 ////
-//        Query mQuery = FirebaseFirestore.getInstance()
+//        Query mQueryTimeStamp = FirebaseFirestore.getInstance()
 //                .collection(MAIN_COLLECTION)
 //                .document("Sport")
 //                .collection("SportsGroups")
@@ -223,7 +489,7 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
 //
 //
 //        FirestoreRecyclerOptions<Group_Object> options = new FirestoreRecyclerOptions.Builder<Group_Object>()
-//                .setQuery(mQuery, Group_Object.class).build();
+//                .setQuery(mQueryTimeStamp, Group_Object.class).build();
 //
 //
 //        return new FirestoreRecyclerAdapter<Group_Object, UserViewHolder>(options) {
@@ -242,7 +508,7 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
 //                    holder.mUserName.setText(String.format("%s", model.getUserName()));
 //                    holder.mGroupLink.setText(model.getGroupLink() + "");
 //                    final String mLink = holder.mGroupLink.getText().toString();
-//                    holder.mCatogries.setText(model.getCatogries() + "");
+//                    holder.mCatogries.setText(model.getCategory() + "");
 //                    holder.materialRatingBar.setRating((float) model.getRatings());
 //                    holder.mNumOfLikes.setText(model.getmNumOfLiks() + "");
 //                    holder.mNumOfComments.setText(model.getmNumOfComments() + "");
@@ -395,7 +661,5 @@ public class MainFragment extends Fragment implements RestaurantAdapter.OnRestau
 //    }
 
 
-    // ======================================== My Methods ============================================= \\
+// ======================================== My Methods ============================================= \\
 //    https://stackoverflow.com/questions/21627167/how-to-send-a-intent-with-telegram
-
-}

@@ -19,6 +19,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.firebase.firestore.Query;
+import com.manooz.telgramgroups.Current_Project.Utily.GroupsUtil;
 import com.manooz.telgramgroups.R;
 
 /**
@@ -27,32 +28,33 @@ import com.manooz.telgramgroups.R;
 public class Filters {
 
     private String category = null;
-    private String likes = null;
-//    private int price = -1;
+    private String city = null;
+    private int likes = -1;
+    
     private String sortBy = null;
     private Query.Direction sortDirection = null;
 
+
     public Filters() {}
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
     public static Filters getDefault() {
         Filters filters = new Filters();
-        filters.setSortBy(Group_Object.FIELD_NumOfLiks);
+        filters.setSortBy("timestamp");
         filters.setSortDirection(Query.Direction.DESCENDING);
 
         return filters;
     }
-
     public boolean hasCategory() {
         return !(TextUtils.isEmpty(category));
     }
-
-    public boolean haslikes() {
-        return !(TextUtils.isEmpty(likes));
-    }
-
-//    public boolean hasPrice() {
-//        return (price > 0);
-//    }
 
     public boolean hasSortBy() {
         return !(TextUtils.isEmpty(sortBy));
@@ -65,22 +67,6 @@ public class Filters {
     public void setCategory(String category) {
         this.category = category;
     }
-
-    public String getLikes() {
-        return likes;
-    }
-
-    public void setLikes(String likes) {
-        this.likes = likes;
-    }
-
-//    public int getPrice() {
-//        return price;
-//    }
-//
-//    public void setPrice(int price) {
-//        this.price = price;
-//    }
 
     public String getSortBy() {
         return sortBy;
@@ -101,7 +87,7 @@ public class Filters {
     public String getSearchDescription(Context context) {
         StringBuilder desc = new StringBuilder();
 
-        if (category == null && likes == null) {
+        if (category == null && city == null) {
             desc.append("<b>");
             desc.append(context.getString(R.string.all_restaurants));
             desc.append("</b>");
@@ -113,22 +99,22 @@ public class Filters {
             desc.append("</b>");
         }
 
-        if (category != null && likes != null) {
+        if (category != null && city != null) {
             desc.append(" in ");
         }
 
-        if (likes != null) {
+        if (city != null) {
             desc.append("<b>");
-            desc.append(likes);
+            desc.append(city);
             desc.append("</b>");
         }
 
-//        if (price > 0) {
-//            desc.append(" for ");
-//            desc.append("<b>");
-//            desc.append(RestaurantUtil.getPriceString(price));
-//            desc.append("</b>");
-//        }
+        if (likes > 0) {
+            desc.append(" for ");
+            desc.append("<b>");
+            desc.append(GroupsUtil.getPriceString(likes));
+            desc.append("</b>");
+        }
 
         return desc.toString();
     }
@@ -139,7 +125,7 @@ public class Filters {
         } else if (Group_Object.FIELD_NumOfLiks.equals(sortBy)) {
             return context.getString(R.string.sorted_by_popularity);
         } else {
-            return context.getString(R.string.sorted_by_price);
+            return context.getString(R.string.sorted_by_comments);
         }
     }
 }

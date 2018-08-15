@@ -36,9 +36,7 @@
             android:parentActivityName=".Current_Project.MainScreen"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity android:name=".Current_Project.Fragments.GroupDetails" />
-        <activity android:name=".Current_Project.ListOfGroups" />
-        <activity android:name=".Current_Project.Fragments.MainFragment"></activity>
+        <activity android:name=".Current_Project.GroupDetails" />
     </application>
 
 </manifest>

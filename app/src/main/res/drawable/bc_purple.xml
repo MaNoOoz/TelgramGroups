@@ -3,7 +3,7 @@
 
     <item android:state_pressed="true" android:state_hovered="false">
         <shape>
-            <solid  android:color="#f7423f" />
+            <solid  android:color="#e0711094" />
             <corners
                 android:bottomLeftRadius="5dp"
                 android:bottomRightRadius="5dp"
@@ -11,21 +11,21 @@
                 android:topRightRadius="5dp" />
             <gradient
                 android:angle="270"
-                android:endColor="#0769e8"
+                android:endColor="#e0711094"
                 android:gradientRadius="550dp"
-                android:startColor="#0856ff"
+                android:startColor="#7c0ea7"
                 android:type="radial" />
 
             <stroke
                 android:width="2dp"
-                android:color="#2a98d8" />
+                android:color="#efefef" />
 
         </shape>
     </item>
 
     <item>
         <shape>
-            <solid  android:color="#1b7aa6" />
+            <solid  android:color="#e0711094" />
             <corners
                 android:bottomLeftRadius="5dp"
                 android:bottomRightRadius="5dp"
@@ -33,15 +33,15 @@
                 android:topRightRadius="5dp" />
             <gradient
                 android:angle="-90"
-                android:endColor="#149ee3"
+                android:endColor="#ce2ada"
                 android:gradientRadius="250dp"
-                android:startColor="#f351b7f6"
+                android:startColor="#b8662594"
                 android:type="linear" />
             <gradient
                 android:angle="-90"
-                android:endColor="#f4294cd6"
+                android:endColor="#5d1481"
                 android:gradientRadius="250dp"
-                android:startColor="#f01c5ee3"
+                android:startColor="#1eb1c8"
                 android:type="linear" />
 
             <stroke

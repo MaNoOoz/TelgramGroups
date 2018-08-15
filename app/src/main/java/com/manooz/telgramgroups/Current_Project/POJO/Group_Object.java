@@ -1,6 +1,7 @@
 package com.manooz.telgramgroups.Current_Project.POJO;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
@@ -8,16 +9,23 @@ import java.util.Date;
 
 // Created by MaNoOoz on 1/1/2018.
 //
-
+@IgnoreExtraProperties
 //https://github.com/AndroidCourseMaterial/MovieQuotes
-public class Group_Object {
+public class Group_Object extends com.manooz.telgramgroups.Current_Project.GroupId {
 
-    public static final String FIELD_CATOGRIES =     "catogries";
-    public static final String FIELD_GroupName =     "groupName";
-    public static final String FIELD_NumOfComments = "mNumOfComments";
-    public static final String FIELD_NumOfLiks =     "mNumOfLiks";
-    public static final String FIELD_NumOfRatings =   "mNumOfRatings";
-    public static final String FIELD_Ratings =        "ratings";
+    // Object Fields
+    public static final String  KEY_TITLE = "title";
+    public static final String  KEY_DESCRIPTION = "description";
+    public static final String  FIELD_GroupName = "groupName";
+    public static final String  FIELD_GroupDesc = "groupDesc";
+    public static final String  FIELD_GroupLink = "groupLink";
+    public static final String  FIELD_UserName = "UserName";
+    public static final String  FIELD_CATEGORY = "categories";
+    public static final String  FIELD_NumOfComments = "mNumOfComments";
+    public static final String  FIELD_NumOfLiks = "mNumOfLiks";
+    public static final String  FIELD_NumOfViews = "mNumOfViews";
+    public static final String  FIELD_NumOfRatings = "mNumOfRatings";
+    public static final String  FIELD_Ratings = "ratings";
 
 
     private String photo;
@@ -26,26 +34,29 @@ public class Group_Object {
     private String GroupDesc;
     private String GroupLink;
     private String UserName;
-    private String Catogries;
+    private String city;
+
+    private String categories;
     private double Ratings;
     private int mNumOfRatings;
     private int mNumOfLiks;
-
-
     private int mNumOfComments;
     private int mNumOfViews;
     private Date mTimestamp;
 
+
     public Group_Object(String photo, String groupName, String groupDesc,
-                        String groupLink, String userName, String catogries,
+                        String groupLink, String userName, String categories, String city,
                         double ratings, int mNumOfRatings, int mNumOfLiks, int mNumOfComments, int mNumOfViews) {
         this.photo = photo;
-        GroupName = groupName;
-        GroupDesc = groupDesc;
-        GroupLink = groupLink;
-        UserName = userName;
-        Catogries = catogries;
-        Ratings = ratings;
+        this.GroupName = groupName;
+        this.GroupDesc = groupDesc;
+        this.GroupLink = groupLink;
+        this.UserName = userName;
+        this.categories = categories;
+        this.city = city;
+
+        this.Ratings = ratings;
         this.mNumOfRatings = mNumOfRatings;
         this.mNumOfLiks = mNumOfLiks;
         this.mNumOfComments = mNumOfComments;
@@ -60,6 +71,13 @@ public class Group_Object {
 
 
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
     public int getmNumOfLiks() {
         return mNumOfLiks;
     }
@@ -92,12 +110,12 @@ public class Group_Object {
         this.mTimestamp = mTimestamp;
     }
 
-    public String getCatogries() {
-        return Catogries;
+    public String getCategories() {
+        return categories;
     }
 
-    public void setCatogries(String catogries) {
-        Catogries = catogries;
+    public void setCategories(String categories) {
+        this.categories = categories;
     }
 
     public double getRatings() {

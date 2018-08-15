@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,32 +33,28 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
-import com.manooz.telgramgroups.Current_Project.Fragments.GroupDetails;
+import com.manooz.telgramgroups.Current_Project.GroupDetails;
 import com.manooz.telgramgroups.Current_Project.POJO.Group_Object;
 import com.manooz.telgramgroups.Current_Project.POJO.Upload;
+import com.manooz.telgramgroups.Current_Project.Utily.mConstants;
 import com.manooz.telgramgroups.R;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
-import static com.manooz.telgramgroups.Current_Project.POJO.Group_Object.FIELD_NumOfLiks;
-import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.GroupName;
 import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.MAIN_COLLECTION;
+import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.NumOfLiks;
 
 /**
  * RecyclerView adapter for a list of Restaurants.
@@ -68,7 +63,7 @@ public class RestaurantAdapter extends FirestoreRecyclerAdapter<Group_Object, Re
 
     private String[] mArrayOfdocumentRefrences   = new String[]{"Sport",""};
     private String[] mArrayOfCollictionRefrences = new String[]{"SportsGroups",""};
-
+    private static final String TAG = "RestaurantAdapter";
     private List<Group_Object> group_objects;
     private Context context;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -89,10 +84,7 @@ public class RestaurantAdapter extends FirestoreRecyclerAdapter<Group_Object, Re
         ImageView mGroupImage;
         me.zhanghai.android.materialratingbar.MaterialRatingBar materialRatingBar;
 
-        void mydata(){
 
-
-        }
         public mViewHolder(View itemView) {
 
             super(itemView);
@@ -104,7 +96,7 @@ public class RestaurantAdapter extends FirestoreRecyclerAdapter<Group_Object, Re
             mGroupImage = itemView.findViewById(R.id.mGroupImage);
             //Texts
             mNumOfComments = itemView.findViewById(R.id.mNumOfComments);
-            mNumOfLikes = itemView.findViewById(R.id.mNumOfLikes);
+            mNumOfLikes = itemView.findViewById(R.id.mNumOfLiksTxt);
             mNumOfViews = itemView.findViewById(R.id.mNumOfViews);
             mRateText = itemView.findViewById(R.id.mRateTxt);
             //Buttons
@@ -149,10 +141,10 @@ public class RestaurantAdapter extends FirestoreRecyclerAdapter<Group_Object, Re
             final String mFirst = holder.mGroupName.getText().toString();
             holder.mGroupDesc.setText(model.getGroupDesc() + "");
             final String mSecond = holder.mGroupDesc.getText().toString();
-            holder.mUserName.setText(String.format("%s", model.getUserName()));
+            holder.mUserName.setText( model.getUserName()+"");
             holder.mGroupLink.setText(model.getGroupLink() + "");
             final String mLink = holder.mGroupLink.getText().toString();
-            holder.mCatogries.setText(model.getCatogries() + "");
+            holder.mCatogries.setText(model.getCategories() + "");
             holder.materialRatingBar.setRating((float) model.getRatings());
             holder.mNumOfLikes.setText(model.getmNumOfLiks() + "");
             holder.mNumOfComments.setText(model.getmNumOfComments() + "");
@@ -195,34 +187,62 @@ public class RestaurantAdapter extends FirestoreRecyclerAdapter<Group_Object, Re
             holder.mLikeBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
+////
+////                    DocumentReference s = supCollectionReference.document("01vAq1QkMmFq2Nb7jGhp");
+//                    Group_Object group_object = new Group_Object();
+//                    int num = 0;
+//                    final int ss = group_object.getmNumOfLiks() + num++ ;
+//                    Map<String,Object> objectMap = new HashMap<>();
+//                            objectMap.put(Group_Object.FIELD_NumOfLiks, ss);
 //
+//
+//                    ////                            db.collection(MAIN_COLLECTION).document().collection("likes").document().set(objectMap);
+//////                        GroupsRef.orderBy()
+//
+////                    collectionReference.document("he").set(objectMap, SetOptions.merge());
+//                    supCollectionReference.document("01vAq1QkMmFq2Nb7jGhp").update(Group_Object.FIELD_NumOfLiks,ss);
+//                    Toast.makeText(v.getContext(), "hello" + objectMap , Toast.LENGTH_SHORT).show();
+//                    getDocument();
 
-                    Map<String,Object> objectMap = new HashMap<>();
-                            objectMap.put(GroupName, "gagagag");
-                    ////                            db.collection(MAIN_COLLECTION).document().collection("likes").document().set(objectMap);
-////                        GroupsRef.orderBy()
+                    db.collection("Groups")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Log.d(TAG, document.getId() + " => " + document.getData());
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
 
-//                    collectionReference.document("he").set(objectMap, SetOptions.merge());
-                    supCollectionReference.document("01vAq1QkMmFq2Nb7jGhp").set(objectMap, SetOptions.merge());
-                    Toast.makeText(v.getContext(), "hello" + objectMap , Toast.LENGTH_SHORT).show();
+                    final DocumentReference document = supCollectionReference.document("01vAq1QkMmFq2Nb7jGhp");
+                    final Group_Object group_object = new Group_Object();
 
+                    db.runTransaction(new Transaction.Function<Void>() {
+                        @NonNull
+                        @Override
+                        public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                            DocumentSnapshot asd = transaction.get(document);
+                            String  newLike = asd.getString(mConstants.NumOfLiks);
+                            int i = Integer.parseInt(newLike) +1;
+                            transaction.update(document,NumOfLiks,i);
+                            Toast.makeText(v.getContext(), "hello" + i, Toast.LENGTH_SHORT).show();
+                            // Success
+                            return null;
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "Transaction success!");
+                            Toast.makeText(v.getContext(), "hello"  , Toast.LENGTH_SHORT).show();
+                            holder.mLikeBtn.setBackground(v.getContext().getDrawable(R.mipmap.action_like_accent));
 
-
-
-
-//                    db.runTransaction(new Transaction.Function<Void>() {
-//                        @NonNull
-//                        @Override
-//                        public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-//                            DocumentReference documentReference1 = collectionReference.document("hi");
-//                            DocumentSnapshot asd = transaction.get(documentReference1);
-//                            String  newpriority = asd.getString(GroupName)  ;
-//                            transaction.update(documentReference1,GroupName,newpriority);
-//                            Toast.makeText(v.getContext(), "hello" + newpriority, Toast.LENGTH_SHORT).show();
-//                            return null;
-//                        }
-//                    });
-//                                       holder.mLikeBtn.setBackground(v.getContext().getDrawable(R.mipmap.action_like_accent));
+                        }
+                    });
 ////
 ////                    documentReference.addSnapshotListener(v.getContext(),new EventListener<DocumentSnapshot>() {
 ////                                @Override
@@ -302,18 +322,43 @@ public class RestaurantAdapter extends FirestoreRecyclerAdapter<Group_Object, Re
 //    public void onBindViewHolder(mViewHolder holder, int position) {
 //        holder.bind(getSnapshot(position), mListener);
 //    }
+//    public void getDocument() {
+//        // [START get_document]
+//        final DocumentReference document = supCollectionReference.document("01vAq1QkMmFq2Nb7jGhp");
+//        document.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document.exists()) {
+//                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+//                    } else {
+//                        Log.d(TAG, "No such document");
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                }
+//            }
+//        });
+//        // [END get_document]
+//    }
 
-    public interface OnRestaurantSelectedListener {
+    // ============================= My Methods  =========================\\
 
-        void onRestaurantSelected(DocumentSnapshot restaurant);
+    public void deleteitem(int position){
+        getSnapshots().getSnapshot(position).getReference().delete();
 
     }
+
     public void mShowOnlyTop(List<Group_Object> mTopCats) {
         group_objects = mTopCats;
 
     }
 
+    public interface OnRestaurantSelectedListener {
+        void onRestaurantSelected(DocumentSnapshot restaurant);
 
+    }
 
     /**
      * Indicates whether the specified app ins installed and can used as an intent. This
@@ -353,7 +398,7 @@ public class RestaurantAdapter extends FirestoreRecyclerAdapter<Group_Object, Re
 //            myIntent.putExtra(Intent.EXTRA_TEXT, msg);//
 //            Objects.requireNonNull(getContext()).startActivity(Intent.createChooser(myIntent, "Share with"));
         } else {
-            Toast.makeText(context, "Telegram not Installed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Telegram Not Installed In Your Device", Toast.LENGTH_SHORT).show();
         }
     }
 

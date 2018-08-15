@@ -1,5 +1,7 @@
 package com.manooz.telgramgroups.Current_Project;
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -16,15 +18,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.manooz.telgramgroups.Current_Project.Fragments.FilterDialogFragment;
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.manooz.telgramgroups.Current_Project.Fragments.HomeFragment;
 import com.manooz.telgramgroups.Current_Project.Fragments.MainFragment;
 import com.manooz.telgramgroups.Current_Project.Fragments.mCategoriesFragment;
 import com.manooz.telgramgroups.Current_Project.Fragments.mFavFragment;
 import com.manooz.telgramgroups.R;
 
+import java.util.Collections;
+
 public class MainScreen extends AppCompatActivity {
 
+    private static final int RC_SIGN_IN = 9001;
+    private MainActivityViewModel mViewModel;
 
     BottomNavigationView navigation;
     FloatingActionButton addPostBtn;
@@ -49,9 +57,12 @@ public class MainScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         mainToolbar = findViewById(R.id.main_toolbar);
-
+        // Enable Firestore logging
+        FirebaseFirestore.setLoggingEnabled(true);
+        // View model
+        mViewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         setSupportActionBar(mainToolbar);
-        getSupportActionBar().setTitle("Photo Blog");
+        getSupportActionBar().setTitle(getString(R.string.app_name));
 
         CreateMyNaveBottom();
         myWidgets();
@@ -87,9 +98,6 @@ public class MainScreen extends AppCompatActivity {
         });
 
 
-
-
-
     }
 
 
@@ -106,15 +114,11 @@ public class MainScreen extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-//        return super.onOptionsItemSelected(item);
-
         switch (item.getItemId()) {
             case R.id.action_logout_btn:
-                // TODO: 6/10/2018
-//                logOut();
-
-                return true;
+                AuthUI.getInstance().signOut(this);
+                startSignIn();
+                break;
 
             case R.id.action_settings_btn:
 //
@@ -124,7 +128,11 @@ public class MainScreen extends AppCompatActivity {
             default:
                 return false;
         }
+        return super.onOptionsItemSelected(item);
+
     }
+
+
 
     // ======================================== My Methods ============================================= \\
 
@@ -150,7 +158,7 @@ public class MainScreen extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         if (fragment == homeFragment) {
-            addPostBtn.setVisibility(View.VISIBLE);
+            addPostBtn.setVisibility(View.INVISIBLE);
 
             fragmentTransaction.hide(mCategoriesFragment);
             fragmentTransaction.hide(mFavFragment);
@@ -176,6 +184,8 @@ public class MainScreen extends AppCompatActivity {
 
         }
         if (fragment == mainFragment) {
+            addPostBtn.setVisibility(View.VISIBLE);
+
             fragmentTransaction.hide(homeFragment);
             fragmentTransaction.hide(mCategoriesFragment);
             fragmentTransaction.hide(mFavFragment);
@@ -188,6 +198,36 @@ public class MainScreen extends AppCompatActivity {
 
     }
 
+    private boolean shouldStartSignIn() {
+        return (!mViewModel.getIsSigningIn() && FirebaseAuth.getInstance().getCurrentUser() == null);
+    }
+    private void startSignIn() {
+        // Sign in with FirebaseUI
+        Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
+                .setAvailableProviders(Collections.singletonList(
+                        new AuthUI.IdpConfig.EmailBuilder().build()))
+                .setIsSmartLockEnabled(false)
+                .build();
+
+        startActivityForResult(intent, RC_SIGN_IN);
+        mViewModel.setIsSigningIn(true);
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Start sign in if necessary
+        if (shouldStartSignIn()) {
+            startSignIn();
+            return;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 
     void CreateMyNaveBottom() {
         //FRAGMENTS

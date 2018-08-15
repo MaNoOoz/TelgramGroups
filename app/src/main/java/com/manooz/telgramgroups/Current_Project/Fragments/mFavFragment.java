@@ -1,31 +1,22 @@
 package com.manooz.telgramgroups.Current_Project.Fragments;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.manooz.telgramgroups.Current_Project.POJO.Filters;
 import com.manooz.telgramgroups.Current_Project.POJO.Group_Object;
-import com.manooz.telgramgroups.Current_Project.Adapter.GroupAdapter;
 import com.manooz.telgramgroups.Current_Project.Utily.mConstants;
 import com.manooz.telgramgroups.R;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class mFavFragment extends Fragment
 //        implements
@@ -37,7 +28,6 @@ public class mFavFragment extends Fragment
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference notebookref= db.collection(mConstants.MAIN_COLLECTION);
     RecyclerView mRecyclerView;
-    GroupAdapter groupAdapter;
     RecyclerView.ItemDecoration itemDecoration;
     Query query ;
     private static final int LIMIT = 50;
@@ -91,7 +81,7 @@ public class mFavFragment extends Fragment
 //
 //        // Price (equality filter)
 //        if (filters.hasPrice()) {
-//            query = query.whereEqualTo("price", filters.getPrice());
+//            query = query.whereEqualTo("price", filters.getLikes());
 //        }
 //
 //        // Sort by (orderBy with direction)
