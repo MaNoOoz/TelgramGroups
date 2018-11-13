@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">PhotoBlog</string>
-    <string name="groups_names">Groups</string>
-    <string name="groupAdded">تمت إضافة المجموعة بنجاح</string>
-    <string name="enter_good_group_link">أدخل رابط صالح</string>
-</resources>
