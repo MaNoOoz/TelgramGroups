@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -35,11 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -49,16 +43,12 @@ import com.manooz.telgramgroups.Current_Project.POJO.Group_Object;
 import com.manooz.telgramgroups.Current_Project.POJO.Upload;
 import com.manooz.telgramgroups.Current_Project.Utily.GroupsUtil;
 import com.manooz.telgramgroups.R;
-import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
-
-import javax.annotation.Nullable;
 
 import static com.manooz.telgramgroups.Current_Project.Utily.mConstants.MAIN_COLLECTION;
 
@@ -99,8 +89,8 @@ public class addGroupActivity extends AppCompatActivity {
 
     private void mySpineers() {
 
-        spinner = (Spinner) findViewById(R.id.spinner);
-        spinner2 = (Spinner) findViewById(R.id.spinnerCity);
+        spinner = findViewById(R.id.spinner);
+        spinner2 = findViewById(R.id.spinnerCity);
 
         // Spinner click listener
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -472,7 +462,7 @@ public class addGroupActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 postImageUri = result.getUri();
-                Picasso.with(this).load(postImageUri).into(addImage);
+//                Picasso.with(this).load(postImageUri).into(addImage);
 //                Intent intent = new Intent();
 //                intent.putExtra("image",postImageUri);
 //                startActivity(intent);
